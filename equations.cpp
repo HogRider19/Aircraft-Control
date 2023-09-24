@@ -17,7 +17,7 @@ double get_q(std::map<std::string, double> v)
 double dVdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return P*cos(al) / v["m"] - (c_xa0 + A * (pow(al, 2))) * q * S / v["m"] - g * sin(v["TH"]);
+    return P*cos(al) / v["m"] - (c_xa0 + A * pow(al, 2)) * q * S / v["m"] - g * sin(v["TH"]);
 }
 
 double dTHdt(std::map<std::string, double> v){
@@ -29,7 +29,7 @@ double dTHdt(std::map<std::string, double> v){
 double dw_zdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return (m_z_al*al + m_z_wz * L/ v["V"] *  v["w_z"] + m_z_delb*del_b)*q*S*L/I_z;
+    return (m_z_al*al + m_z_wz * L/ v["V"] *  v["w_z"] + m_z_delb*(del_b * 3.14 / 180.0))*q*S*L/I_z;
 }
 
 double dthdt(std::map<std::string, double> v){

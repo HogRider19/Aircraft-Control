@@ -19,16 +19,17 @@
 #define V_0 50.0
 #define TH_0 1.55
 #define y_0 500.0
-#define m_0 440.0
+#define m_0 4400.0
 #define T 33.0
 #define h 0.5
-#define v_max 1542.0
+#define V_max 1542.0
 #define g 9.81
 
 // Изменяются в задании 2
-#define del_b 5.0
+#define del_b 4.0
 
 // Начальные условия на выбор
 #define w_z_0 0.0
 #define th_0 0.0
 #define x_0 0.0
+#define T_0 0.0
