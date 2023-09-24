@@ -1,7 +1,5 @@
-#include <consts.h>
-#include <cmath>
-#include <map>
-#include <string>
+#include "consts.h"
+#include "equations.h"
 
 
 double get_al(std::map<std::string, double> v)

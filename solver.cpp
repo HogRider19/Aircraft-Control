@@ -1,6 +1,5 @@
-#include <vector>
-#include <iostream>
-#include "sys_eq.cpp"
+#include "equations.h"
+#include "solver.h"
 
 typedef void (*SolverFunctionPtr)(double, double, double, const std::vector<double>&, std::vector<double>&);
 
