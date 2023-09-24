@@ -2,14 +2,29 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "C/C++: gcc.exe build active file",
-            "command": "D:\\MinGW\\TMD_GCC\\bin\\gcc.exe",
+            "label": "C/C++: g++.exe build active file",
+            "command": "D:\\MinGW\\TMD_GCC\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "src/Code/solver.cpp",
+                "src/Code/equations.cpp",
+                "src/Code/equations.cpp",
+                "src/Include/consts.h",
+                "-I",
+                "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\include",
+                "-I",
+                "src/Include",
+                "-I",
+                "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\Lib\\site-packages\\numpy\\core\\include",
+                "-L",
+                " C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\libs",
+                "-lpython38",
+
+
             ],
             "options": {
                 "cwd": "${fileDirname}"

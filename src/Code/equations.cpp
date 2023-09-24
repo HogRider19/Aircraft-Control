@@ -1,5 +1,5 @@
-#include "consts.h"
-#include "equations.h"
+#include "../Include/consts.h"
+#include "../Include/equations.h"
 
 
 double get_al(std::map<std::string, double> v)

@@ -1,10 +1,14 @@
 {
+    "files.exclude": {
+        "**/example.js": true
+    },
     "files.associations": {
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
         "*.tcc": "cpp",
         "cctype": "cpp",
+        "chrono": "cpp",
         "clocale": "cpp",
         "cmath": "cpp",
         "compare": "cpp",
@@ -14,9 +18,11 @@
         "cstdint": "cpp",
         "cstdio": "cpp",
         "cstdlib": "cpp",
+        "ctime": "cpp",
         "cwchar": "cpp",
         "cwctype": "cpp",
         "deque": "cpp",
+        "map": "cpp",
         "unordered_map": "cpp",
         "vector": "cpp",
         "exception": "cpp",
@@ -28,6 +34,7 @@
         "numeric": "cpp",
         "optional": "cpp",
         "random": "cpp",
+        "ratio": "cpp",
         "string": "cpp",
         "string_view": "cpp",
         "system_error": "cpp",
@@ -44,7 +51,6 @@
         "ranges": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
-        "typeinfo": "cpp",
-        "map": "cpp"
+        "typeinfo": "cpp"
     }
 }
