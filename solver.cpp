@@ -6,12 +6,6 @@ typedef void (*SolverFunctionPtr)(double, double, double, const std::vector<doub
 
 void systemOfEquations(double t, const std::vector<double>& y, std::vector<double>& results)
 {
-    /*
-        0: V | 1: TH | 2: w_z
-        3: th| 4: y  | 5: x
-        6: m |       |
-    */
-
     std::map<std::string, double> values = std::map<std::string, double>();
     values["V"] = y[0];
     values["TH"] = y[1];

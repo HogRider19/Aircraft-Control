@@ -31,7 +31,7 @@ double dTHdt(std::map<std::string, double> v){
 double dw_zdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return (m_z_al*al + m_z_wz * L/ v["V"] *  v["w_z"] +m_z_delb*v["del_b"])*q*S*L/I_z;
+    return (m_z_al*al + m_z_wz * L/ v["V"] *  v["w_z"] + m_z_delb*del_b)*q*S*L/I_z;
 }
 
 double dthdt(std::map<std::string, double> v){
@@ -49,5 +49,3 @@ double dxdt(std::map<std::string, double> v){
 double dmdt(std::map<std::string, double> v){
     return -m_c;
 }
-
-////
