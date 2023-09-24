@@ -1,31 +1,53 @@
 #include <consts.h>
 #include <cmath>
-double al = th - TH;
+#include <map>
+#include <string>
 
-double dVdt(double TH, double V){
-    return P*cos(al)/m - (c_xa0 + A*(al^2))*q*S/m - g*sin(TH);
+
+double get_al(std::map<std::string, double> v)
+{
+    return v["th"] - v["TH"];
 }
 
-double dTHdt(double V, double TH){
-    return P*sin(al)/m*V + c_ya_al*q*S*al/(m*V) - g*cos(TH)/V;
+double get_q(std::map<std::string, double> v)
+{
+    return 0.5 * pow(v["V"], 2) * 1.18 * exp(-v["y"] / 10000);
 }
 
-double dw_zdt(double V, double w_z){
-    return (m_z_al*al + m_z_wz * L/V * w_z +m_z_delb*del_b)*q*S*L/I_z;
+////
+
+double dVdt(std::map<std::string, double> v){
+    double al = get_al(v);
+    double q = get_q(v);
+    return P*cos(al) / v["m"] - (c_xa0 + A * (pow(al, 2))) * q * S / v["m"] - g * sin(v["TH"]);
 }
 
-double dthdt(double th, double w_z){
-    return w_z;
+double dTHdt(std::map<std::string, double> v){
+    double al = get_al(v);
+    double q = get_q(v);
+    return P*sin(al) / v["m"] * v["V"] + c_ya_al*q*S*al / (v["m"] * v["V"]) - g * cos(v["TH"]) / v["V"];
 }
 
-double dydt(double V, double TH, double y){
-    return V*sin(TH);
+double dw_zdt(std::map<std::string, double> v){
+    double al = get_al(v);
+    double q = get_q(v);
+    return (m_z_al*al + m_z_wz * L/ v["V"] *  v["w_z"] +m_z_delb*v["del_b"])*q*S*L/I_z;
 }
 
-double dxdt(double V, double TH, double y){
-    return V*cos(TH);
+double dthdt(std::map<std::string, double> v){
+    return v["w_z"];
 }
 
-double dmdt(){
+double dydt(std::map<std::string, double> v){
+    return v["V"]*sin(v["TH"]);
+}
+
+double dxdt(std::map<std::string, double> v){
+    return v["V"]*cos(v["TH"]);
+}
+
+double dmdt(std::map<std::string, double> v){
     return -m_c;
 }
+
+////
