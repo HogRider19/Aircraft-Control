@@ -10,7 +10,7 @@ namespace plt = matplotlibcpp;
 int main() {
     int seconds = 33;
 
-    std::array<std::vector<double>, 7> simulationsResults;
+    std::array<std::vector<double>, 8> simulationsResults;
 
     for (int i = 0; i < seconds * 2; i++)
     {
@@ -22,10 +22,11 @@ int main() {
 
         for (int k = 0; k < 7; k++)
             (simulationsResults[k]).push_back(results[k]);
+        simulationsResults[7].push_back(results[3] - results[1]);
     }
 
-    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m"};
-    for (int i = 0; i < 7; i++)
+    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m", "a"};
+    for (int i = 0; i < 8; i++)
     {
         plt::subplot(3, 3, i + 1);
         plt::plot(simulationsResults[i]);
