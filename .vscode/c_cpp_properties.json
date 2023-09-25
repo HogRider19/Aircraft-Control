@@ -3,7 +3,11 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\include",
+                "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\Lib\\site-packages\\numpy\\core\\include",
+                "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\libs",
+                "src/Include"
             ],
             "defines": [
                 "_DEBUG",

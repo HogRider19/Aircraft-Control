@@ -1,6 +1,8 @@
+#pragma once
+
 #include <vector>
-#include "./equations.h"
-#include "./consts.h"
+#include "equations.h"
+#include "consts.h"
 
 typedef void (*SolverFunctionPtr)(double, double, double, const std::vector<double>&, std::vector<double>&);
 

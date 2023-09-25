@@ -1,3 +1,5 @@
+
+
 /* ----- DNIT (?) */
 
 /* ----- GAVR (?) */
@@ -5,25 +7,25 @@
 /* ----- ZVER (4) */
 
 // Основные
-#define P 200000.0
+#define P_val 200000.0
 #define m_c 100.0
 #define c_xa0 0.4
-#define A 2.0
+#define A_val 2.0
 #define c_ya_al 1.7
 #define m_z_al -0.6
 #define m_z_wz -0.6
 #define m_z_delb 0.8
 #define I_z 33000.0
-#define L 10.0
-#define S 0.78
+#define L_val 10.0
+#define S_val 0.78
 #define V_0 50.0
 #define TH_0 1.55
 #define y_0 500.0
 #define m_0 4400.0
-#define T 33.0
-#define h 0.5
+#define T_val 33.0
+#define h_val 0.5
 #define V_max 1542.0
-#define g 9.81
+#define g_val 9.81
 
 // Изменяются в задании 2
 #define del_b 4.0

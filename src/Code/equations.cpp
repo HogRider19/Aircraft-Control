@@ -1,5 +1,5 @@
-#include "../Include/consts.h"
-#include "../Include/equations.h"
+#include "consts.h"
+#include "equations.h"
 
 
 double get_al(std::map<std::string, double> v)
@@ -17,19 +17,19 @@ double get_q(std::map<std::string, double> v)
 double dVdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return P*cos(al) / v["m"] - (c_xa0 + A * pow(al, 2)) * q * S / v["m"] - g * sin(v["TH"]);
+    return P_val*cos(al) / v["m"] - (c_xa0 + A_val * pow(al, 2)) * q * S_val / v["m"] - g_val * sin(v["TH"]);
 }
 
 double dTHdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return P*sin(al) / v["m"] * v["V"] + c_ya_al*q*S*al / (v["m"] * v["V"]) - g * cos(v["TH"]) / v["V"];
+    return P_val*sin(al) / v["m"] * v["V"] + c_ya_al*q*S_val*al / (v["m"] * v["V"]) - g_val * cos(v["TH"]) / v["V"];
 }
 
 double dw_zdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return (m_z_al*al + m_z_wz * L/ v["V"] *  v["w_z"] + m_z_delb*(del_b * 3.14 / 180.0))*q*S*L/I_z;
+    return (m_z_al*al + m_z_wz * L_val/ v["V"] *  v["w_z"] + m_z_delb*(del_b * 3.14 / 180.0))*q*S_val*L_val/I_z;
 }
 
 double dthdt(std::map<std::string, double> v){

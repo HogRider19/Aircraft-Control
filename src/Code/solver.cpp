@@ -1,5 +1,5 @@
-#include "../Include/equations.h"
-#include "../Include/solver.h"
+#include "equations.h"
+#include "solver.h"
 
 typedef void (*SolverFunctionPtr)(double, double, double, const std::vector<double>&, std::vector<double>&);
 
