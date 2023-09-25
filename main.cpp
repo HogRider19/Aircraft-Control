@@ -10,13 +10,7 @@ namespace plt = matplotlibcpp;
 int main() {
     int seconds = 33;
 
-    std::vector<double> V_res;
-    std::vector<double> TH_res;
-    std::vector<double> w_z_res;
-    std::vector<double> th_res;
-    std::vector<double> y_res;
-    std::vector<double> x_res;
-    std::vector<double> m_res;
+    std::vector<std::vector<double>> simulationsResults;
 
     for (int i = 0; i < seconds * 2; i++)
     {
@@ -26,20 +20,15 @@ int main() {
         SolverFunctionPtr solver = getEnviconmentSolver();
         solver(0, double(i) / 2, 0.01, initialValues, results);
 
-        V_res.push_back(results[0]);
-        TH_res.push_back(results[1]);
-        w_z_res.push_back(results[2]);
-        th_res.push_back(results[3]);
-        y_res.push_back(results[4]);
-        x_res.push_back(results[5]);
-        m_res.push_back(results[6]);
+        for (int i = 0; i < 7; i++)
+            simulationsResults[i].push_back(results[i]);
     }
 
     std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m"};
     for (int i = 0; i < 7; i++)
     {
         plt::subplot(3, 3, i + 1);
-        plt::plot(V_res);
+        plt::plot(simulationsResults[i]);
         plt::title(titles[i]);
     }
     plt::show();
