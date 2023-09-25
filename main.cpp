@@ -10,7 +10,7 @@ namespace plt = matplotlibcpp;
 int main() {
     int seconds = 33;
 
-    std::vector<std::vector<double>> simulationsResults;
+    std::array<std::vector<double>, 7> simulationsResults;
 
     for (int i = 0; i < seconds * 2; i++)
     {
@@ -20,8 +20,8 @@ int main() {
         SolverFunctionPtr solver = getEnviconmentSolver();
         solver(0, double(i) / 2, 0.01, initialValues, results);
 
-        for (int i = 0; i < 7; i++)
-            simulationsResults[i].push_back(results[i]);
+        for (int k = 0; k < 7; k++)
+            (simulationsResults[k]).push_back(results[k]);
     }
 
     std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m"};
