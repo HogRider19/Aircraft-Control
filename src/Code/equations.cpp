@@ -18,13 +18,13 @@ double get_q(std::map<std::string, double> v)
 double dVdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return P_val*cos(al) / v["m"] - (c_xa0 + A_val * pow(al, 2)) * q * S_val / v["m"] - g_val * sin(v["TH"]);
+    return P_val*cos(al) / v["m"] - (v["c_xa0"] + A_val * pow(al, 2)) * q * S_val / v["m"] - g_val * sin(v["TH"]);
 }
 
 double dTHdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return P_val*sin(al) / (v["m"] * v["V"]) + c_ya_al*q*S_val*al / (v["m"] * v["V"]) - g_val * cos(v["TH"]) / v["V"];
+    return P_val*sin(al) / (v["m"] * v["V"]) + v["c_ya_al"]*q*S_val*al / (v["m"] * v["V"]) - g_val * cos(v["TH"]) / v["V"];
 }
 
 double dw_zdt(std::map<std::string, double> v){

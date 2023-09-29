@@ -9,23 +9,25 @@ void plotParameters(
     std::vector<std::vector<double>> y2,
     std::vector<std::vector<double>> y3)
 {
-    // "V", "TH", "w_z", "th", "y", "x", "m", "y(x)"
-
-    std::cout << x.size() << std::endl;
-
-    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m", "y(x)"};
-    for (int i = 0; i < 7; i++)
+    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m"};
+    for (int i = 0; i < 4; i++)
     {
-        plt::subplot(3, 3, i + 1); 
-        plt::plot(x, y1[i]);
+        plt::figure(i + 1);
+        plt::plot(x, y1[i], {{"label", "c_ya_al_1"}});
+        plt::plot(x, y2[i], {{"label", "c_ya_al_1+20%"}});
+        plt::plot(x, y3[i], {{"label", "c_ya_al_1-20%"}});
         plt::title(titles[i]);
         plt::grid(true);
+        plt::legend();
     }
 
-    plt::subplot(3, 3, 8); 
-    plt::plot(y1[5], y1[4]);
+    plt::figure(5);
+    plt::plot(y1[5], y1[4], {{"label", "c_ya_al_1"}});
+    plt::plot(y2[5], y2[4], {{"label", "c_ya_al_1+20%"}});
+    plt::plot(y3[5], y3[4], {{"label", "c_ya_al_1-20%"}});
     plt::title("y(x)");
     plt::grid(true);
+    plt::legend();
 
     plt::show();
 }
