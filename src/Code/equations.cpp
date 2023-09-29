@@ -24,7 +24,7 @@ double dVdt(std::map<std::string, double> v){
 double dTHdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
-    return P_val*sin(al) / v["m"] * v["V"] + c_ya_al*q*S_val*al / (v["m"] * v["V"]) - g_val * cos(v["TH"]) / v["V"];
+    return P_val*sin(al) / (v["m"] * v["V"]) + c_ya_al*q*S_val*al / (v["m"] * v["V"]) - g_val * cos(v["TH"]) / v["V"];
 }
 
 double dw_zdt(std::map<std::string, double> v){

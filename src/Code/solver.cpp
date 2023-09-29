@@ -93,12 +93,12 @@ void rungeKuttaSystem(
         systemOfEquations(t + step, y4, k4);
 
         // Обновляем значения y1
+        std::vector<double> temp(n);
         for (int i = 0; i < n; ++i)
         {
-            std::vector<double> temp(n);
             temp.push_back((step / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
-            y1.push_back(temp);
         }
+        y1.push_back(temp);
     }
 }
 
@@ -130,7 +130,7 @@ void eulerSystem(
 
         if (t * 100 / t1 - perPersent > 1)
         {
-            std::cout << t * 100 / t1 << "%" << std::endl; 
+            std::cout << int(t * 100 / t1) << "%" << std::endl; 
             perPersent = t * 100 / t1;
         }
 

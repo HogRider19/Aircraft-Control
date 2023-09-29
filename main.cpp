@@ -8,8 +8,6 @@
 namespace plt = matplotlibcpp;
 
 int main() {
-    int seconds = 33;
-
     std::vector<double> initialValues = { V_0, TH_0, w_z_0, th_0, y_0, x_0, m_0 };
     std::vector<std::vector<double>> results;
     std::vector<double> resultsX;
@@ -28,15 +26,19 @@ int main() {
         resultsTransform.push_back(temp);
     }
 
-    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m"};
+    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m", "y(x)"};
     for (int i = 0; i < 7; i++)
     {
         plt::subplot(3, 3, i + 1); 
         plt::plot(resultsX, resultsTransform[i]);
         plt::title(titles[i]);
-        plt::grid(true);
     }
 
+    plt::subplot(3, 3, 8); 
+    plt::plot(resultsTransform[5], resultsTransform[4]);
+    plt::title("y(x)");
+
+    plt::grid(true);
     plt::show();
 
     return 0;
