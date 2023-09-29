@@ -1,3 +1,4 @@
+#include <iostream>
 #include "consts.h"
 #include "equations.h"
 

@@ -10,28 +10,33 @@ namespace plt = matplotlibcpp;
 int main() {
     int seconds = 33;
 
-    std::array<std::vector<double>, 8> simulationsResults;
+    std::vector<double> initialValues = { V_0, TH_0, w_z_0, th_0, y_0, x_0, m_0 };
+    std::vector<std::vector<double>> results;
+    std::vector<double> resultsX;
 
-    for (int i = 0; i < seconds * 2; i++)
+    SolverFunctionPtr solver = getEnviconmentSolver();
+    solver(0, T_val, 0.00001, initialValues, results, resultsX);
+
+    std::vector<std::vector<double>> resultsTransform;
+    for (int k = 0; k < 7; k++)
     {
-        std::vector<double> initialValues = { V_0, TH_0, w_z_0, th_0, y_0, x_0, m_0 };
-        std::vector<double> results;
-
-        SolverFunctionPtr solver = getEnviconmentSolver();
-        solver(0, double(i) / 2, 0.01, initialValues, results);
-
-        for (int k = 0; k < 7; k++)
-            (simulationsResults[k]).push_back(results[k]);
-        simulationsResults[7].push_back(results[3] - results[1]);
+        std::vector<double> temp;
+        for (int i = 0; i < results.size(); i++)
+        {
+            temp.push_back(results[i][k]);
+        }
+        resultsTransform.push_back(temp);
     }
 
-    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m", "a"};
-    for (int i = 0; i < 8; i++)
+    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m"};
+    for (int i = 0; i < 7; i++)
     {
-        plt::subplot(3, 3, i + 1);
-        plt::plot(simulationsResults[i]);
+        plt::subplot(3, 3, i + 1); 
+        plt::plot(resultsX, resultsTransform[i]);
         plt::title(titles[i]);
+        plt::grid(true);
     }
+
     plt::show();
 
     return 0;
