@@ -110,23 +110,24 @@ void eulerSystem(
     std::vector<std::vector<double>>& y1,
     std::vector<double>& x)
 {
-    int n = y0.size(); // количество неизвестных функций
+    int n = y0.size();
+    x.clear(); 
 
-    // Инициализируем вектор y1 начальными значениями
     y1.push_back(y0);
     x.push_back(t0);
 
     double perPersent = 0;
+    double pointIntegrateIntervalCount = (t1 - t0) / step;
+    double pointInterval = (t1 - t0) / MAX_PLOT_POINTS_COUNT;
+    double prevSavedT = t0;
 
-    // Итерационный процесс метода Эйлера
+    std::vector<double> yGlobTemp = y1.back();
     for (double t = t0; t < t1; t += step)
     {
-        // Создаем вектор для хранения временных значений y
-        x.push_back(t);
         std::vector<double> yTemp(n);
 
         std::vector<double> paramsTemp(n);
-        systemOfEquations(t, y1.back(), paramsTemp);
+        systemOfEquations(t, yGlobTemp, paramsTemp);
 
         if (t * 100 / t1 - perPersent > 1)
         {
@@ -134,17 +135,16 @@ void eulerSystem(
             perPersent = t * 100 / t1;
         }
 
-        // Вычисляем новые значения y1
         for (int i = 0; i < n; i++)
-            yTemp[i] = y1.back()[i] + step * paramsTemp[i];
+            yTemp[i] = yGlobTemp[i] + step * paramsTemp[i];
 
-        if (yTemp[0] > V_max)
-            yTemp[0] = V_max;
-        else if (yTemp[0] < 0)
-            yTemp[0] = -V_max;
-
-        // Обновляем значения y1
-        y1.push_back(yTemp);
+        yGlobTemp = yTemp;
+        if (pointIntegrateIntervalCount < MAX_PLOT_POINTS_COUNT || t - prevSavedT > pointInterval)
+        {
+            prevSavedT = t;
+            x.push_back(t);
+            y1.push_back(yTemp);
+        }
     }
 }
 

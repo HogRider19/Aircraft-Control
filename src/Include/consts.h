@@ -1,4 +1,4 @@
-
+#define MAX_PLOT_POINTS_COUNT 1000
 
 /* ------------------------------------------------------------- DNIT (3) */
 
@@ -19,7 +19,6 @@
 #define y_0 1000.0
 #define m_0 13000.0
 #define T_val 33.0
-#define h_val 0.5
 #define V_max 1860.0
 #define g_val 9.81
 
@@ -27,7 +26,8 @@
 #define del_b 15.0
 
 // Начальные условия на выбор
-#define w_z_0 1.0
+#define h_val 0.0005
+#define w_z_0 -1.0
 #define th_0 0.0
 #define x_0 0.0
 #define T_0 0.0

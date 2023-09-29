@@ -1,45 +1,20 @@
 #define _USE_MATH_DEFINES
 
-#include <iostream>
-#include <cmath>
 #include "solver.h"
-#include "src/Include/matplotlibcpp.h"
+#include "ploter.h"
 
-namespace plt = matplotlibcpp;
 
 int main() {
     std::vector<double> initialValues = { V_0, TH_0, w_z_0, th_0, y_0, x_0, m_0 };
-    std::vector<std::vector<double>> results;
+    std::vector<std::vector<double>> results1, results2, results3;
     std::vector<double> resultsX;
 
     SolverFunctionPtr solver = getEnviconmentSolver();
-    solver(0, T_val, 0.00001, initialValues, results, resultsX);
+    solver(T_0, T_val, h_val, initialValues, results1, resultsX);
+    solver(T_0, T_val, h_val, initialValues, results2, resultsX);
+    solver(T_0, T_val, h_val, initialValues, results3, resultsX);
 
-    std::vector<std::vector<double>> resultsTransform;
-    for (int k = 0; k < 7; k++)
-    {
-        std::vector<double> temp;
-        for (int i = 0; i < results.size(); i++)
-        {
-            temp.push_back(results[i][k]);
-        }
-        resultsTransform.push_back(temp);
-    }
-
-    std::vector<std::string> titles = {"V", "TH", "w_z", "th", "y", "x", "m", "y(x)"};
-    for (int i = 0; i < 7; i++)
-    {
-        plt::subplot(3, 3, i + 1); 
-        plt::plot(resultsX, resultsTransform[i]);
-        plt::title(titles[i]);
-    }
-
-    plt::subplot(3, 3, 8); 
-    plt::plot(resultsTransform[5], resultsTransform[4]);
-    plt::title("y(x)");
-
-    plt::grid(true);
-    plt::show();
-
+    plotParameters(resultsX, transformResults(results1),
+            transformResults(results2), transformResults(results3));
     return 0;
 }
