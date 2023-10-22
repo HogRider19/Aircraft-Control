@@ -4,6 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
+                "/usr/include/python3.10",
+                "src/Include",
                 "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\include",
                 "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\Lib\\site-packages\\numpy\\core\\include",
                 "C:\\Users\\79143\\AppData\\Local\\Programs\\Python\\Python38\\libs",
@@ -14,7 +16,6 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:\\MinGW\\TMD_GCC\\bin\\gcc.exe",
             "cStandard": "c17",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "windows-gcc-x64"
