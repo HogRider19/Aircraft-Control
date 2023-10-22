@@ -350,10 +350,10 @@ template <> struct select_npy_type<uint64_t> { const static NPY_TYPES type = NPY
 
 // Sanity checks; comment them out or change the numpy type below if you're compiling on
 // a platform where they don't apply
-// static_assert(sizeof(long long) == 8);
-// template <> struct select_npy_type<long long> { const static NPY_TYPES type = NPY_INT64; };
-// static_assert(sizeof(unsigned long long) == 8);
-// template <> struct select_npy_type<unsigned long long> { const static NPY_TYPES type = NPY_UINT64; };
+static_assert(sizeof(long long) == 8);
+template <> struct select_npy_type<long long> { const static NPY_TYPES type = NPY_INT64; };
+static_assert(sizeof(unsigned long long) == 8);
+template <> struct select_npy_type<unsigned long long> { const static NPY_TYPES type = NPY_UINT64; };
 
 template<typename Numeric>
 PyObject* get_array(const std::vector<Numeric>& v)
@@ -2255,9 +2255,9 @@ inline void subplot(long nrows, long ncols, long plot_number)
 
     // construct positional args
     PyObject* args = PyTuple_New(3);
-    PyTuple_SetItem(args, 0, PyLong_FromDouble(nrows));
-    PyTuple_SetItem(args, 1, PyLong_FromDouble(ncols));
-    PyTuple_SetItem(args, 2, PyLong_FromDouble(plot_number));
+    PyTuple_SetItem(args, 0, PyFloat_FromDouble(nrows));
+    PyTuple_SetItem(args, 1, PyFloat_FromDouble(ncols));
+    PyTuple_SetItem(args, 2, PyFloat_FromDouble(plot_number));
 
     PyObject* res = PyObject_CallObject(detail::_interpreter::get().s_python_function_subplot, args);
     if(!res) throw std::runtime_error("Call to subplot() failed.");

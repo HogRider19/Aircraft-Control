@@ -1,4 +1,5 @@
 #define _USE_MATH_DEFINES
+#define WITHOUT_NUMPY
 
 #include <iostream>
 #include "matplotlibcpp.h"

@@ -1,5 +1,3 @@
-#include <iostream>
-#include "consts.h"
 #include "equations.h"
 
 
@@ -22,6 +20,11 @@ double dVdt(std::map<std::string, double> v){
 }
 
 double dTHdt(std::map<std::string, double> v){
+
+    #ifdef PARALLEL_APPROACH
+        return 0;
+    #endif
+
     double al = get_al(v);
     double q = get_q(v);
     return P_val*sin(al) / (v["m"] * v["V"]) + v["c_ya_al"]*q*S_val*al / (v["m"] * v["V"]) - g_val * cos(v["TH"]) / v["V"];
@@ -48,3 +51,11 @@ double dxdt(std::map<std::string, double> v){
 double dmdt(std::map<std::string, double> v){
     return -m_c;
 }
+
+double drdt(std::map<std::string, double> v){
+    return v["V_c"] * cos(v["e_c"] - v["TH_c"]) - v["V"] * cos(v["f_c"] - v["TH_c"]);
+}
+
+double de_cdt(std::map<std::string, double> v){
+    return (-v["V_c"] * cos(v["e_c"] - v["TH_c"]) - v["V"] * sin(v["f_c"] - v["TH_c"])) / v["r"];
+} 
