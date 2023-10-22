@@ -3,6 +3,8 @@
 #define EULER
 
 #include <vector>
+#include <limits>
+#include <stdexcept>
 #include "equations.h"
 #include "consts.h"
 

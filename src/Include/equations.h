@@ -25,6 +25,7 @@ double dmdt(std::map<std::string, double> v);
 
 double dTHdt_approach(std::map<std::string, double> v);
 double de_cdt_approach(std::map<std::string, double> v);
+double dTHdt_proportial(std::map<std::string, double> v, double k);
 
 /*   
     Equations for the target

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "matplotlibcpp.h"
+#include "consts.h"
 
 
 void plotParameters(std::vector<double>, std::vector<std::vector<double>>, std::vector<std::vector<double>>, std::vector<std::vector<double>>);

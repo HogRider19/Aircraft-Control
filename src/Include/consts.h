@@ -1,6 +1,12 @@
 #define MAX_PLOT_POINTS_COUNT 1000
 
-#define PARALLEL_APPROACH
+#define MAX_DISTANCING 10.0
+#define MIN_DISTANCING 10.0
+
+//#define PARALLEL_APPROACH
+#define PROPORTIAL_APPROACH
+
+//#define SIM_DEBUG
 
 /* ------------------------------------------------------------- DNIT (3) */
 
@@ -20,14 +26,14 @@
 #define x_0 1000.0
 #define t_l 2
 #define m_0 13000.0
-#define T_val 11.0
+#define T_val 30.0
 #define V_max 1860.0
 #define g_val 9.81
 
 #define x_c_0 2100.0
 #define y_c_0 3200.0
 #define TH_c_0 -0.2
-#define V_c_0 300.0
+#define V_c_0 20.0
 
 // Изменяются в задании 2
 #define del_b 0.0
@@ -39,7 +45,7 @@
 #define c_xa0_3 0.4
 
 // Начальные условия на выбор
-#define h_val 0.005
+#define h_val 0.0005
 #define w_z_0 0.0
 #define th_0 0.0
 #define T_0 0.0

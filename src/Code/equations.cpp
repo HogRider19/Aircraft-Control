@@ -35,6 +35,10 @@ double dTHdt_approach(std::map<std::string, double> v){
     return dVdt(v) / v["V"] * tan(v["e_c"] - v["TH"]);
 }
 
+double dTHdt_proportial(std::map<std::string, double> v, double k = 1){
+    return k * de_cdt(v);
+}
+
 double dw_zdt(std::map<std::string, double> v){
     double al = get_al(v);
     double q = get_q(v);
@@ -78,11 +82,6 @@ double dy_cdt(std::map<std::string, double> v){
 };
 
 double drdt(std::map<std::string, double> v){
-
-    // #ifdef PARALLEL_APPROACH
-    //     return sqrt(pow(v["x"] - v["x_c"], 2) + pow(v["y"] - v["y_c"], 2));
-    // #endif
-
     double f_c = get_f_c(v);
     return v["V_c"] * cos(v["e_c"] - v["TH_c"]) - v["V"] * cos(v["e_c"] - v["TH"]);
 };

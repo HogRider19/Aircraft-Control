@@ -29,7 +29,6 @@ void systemOfEquations(
     values["y_c"] = y[12];
 
     results[0] = dVdt(values);
-    results[1] = t < t_l ? dTHdt(values) : dTHdt_approach(values);
     results[2] = dw_zdt(values);
     results[3] = dthdt(values);
     results[4] = dydt(values);
@@ -38,10 +37,28 @@ void systemOfEquations(
 
     results[7] = dV_cdt(values);
     results[8] = dTH_cdt(values);
-    results[9] = t < t_l ? de_cdt(values) : de_cdt_approach(values);
+    results[9] = de_cdt(values);
     results[10] = drdt(values);
     results[11] = dx_cdt(values);
     results[12] = dy_cdt(values);
+
+    if (t >= t_l)
+    {
+        #ifdef PARALLEL_APPROACH
+            //results[1] = dTHdt_approach(values);
+            results[1] = dTHdt_proportial(values, 30);
+        #else
+            #ifdef PROPORTIAL_APPROACH
+                results[1] = dTHdt_proportial(values, 2);
+            #else
+                throw std::runtime_error("No targeting method selected!");
+            #endif
+        #endif
+    }
+    else
+    {
+        results[1] = dTHdt(values);
+    }
 
     // std::cout << "dVdt: " << y[0] << std::endl;
     // std::cout << "dVdt: " << y[0] << std::endl;
@@ -138,9 +155,40 @@ void eulerSystem(
     double pointInterval = (t1 - t0) / MAX_PLOT_POINTS_COUNT;
     double prevSavedT = t0;
 
+    
+    // Только для наведения (колхоз)
+    #ifdef MAX_DISTANCING
+        double minDist = std::numeric_limits<double>::max( );    
+    #endif
+    //
+
+
     std::vector<double> yGlobTemp = y1.back();
     for (double t = t0; t < t1; t += step)
     {
+        // Только для наведения (колхоз)
+        #ifdef MAX_DISTANCING
+            double dist = fabs(y1.back()[10]);
+            if (t > t_l && dist - minDist > MAX_DISTANCING)
+            {
+                std::cout << "Distance interruption! T = " << t << std::endl;
+                break;
+            }
+            
+            if (dist < minDist)
+                minDist = dist;
+        #endif
+
+        #ifdef MIN_DISTANCING
+            if (t > t_l && fabs(y1.back()[10]) < MIN_DISTANCING)
+            {
+                std::cout << "Hit interruption! T = " << t << std::endl;
+                break;
+            }
+        #endif
+        //
+
+
         std::vector<double> yTemp(n);
 
         std::vector<double> paramsTemp(n);

@@ -4,6 +4,7 @@ g++ main.cpp \
     src/Code/ploter.cpp \
     \
     -o main \
+    -O3 \
     \
     -I src/Include \
     -I /usr/include/python3.10 \
