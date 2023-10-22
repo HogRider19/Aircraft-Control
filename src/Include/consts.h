@@ -20,17 +20,17 @@
 #define x_0 1000.0
 #define t_l 2
 #define m_0 13000.0
-#define T_val 33.0
+#define T_val 11.0
 #define V_max 1860.0
 #define g_val 9.81
 
-#define x_c_0 2100
-#define y_c_0 3200
+#define x_c_0 2100.0
+#define y_c_0 3200.0
 #define TH_c_0 -0.2
-#define V_c_0 20
+#define V_c_0 300.0
 
 // Изменяются в задании 2
-#define del_b 15.0
+#define del_b 0.0
 #define c_ya_al_1 1.2
 #define c_ya_al_2 1.44
 #define c_ya_al_3 0.96

@@ -18,17 +18,30 @@ void systemOfEquations(
     values["y"] = y[4];
     values["x"] = y[5];
     values["m"] = y[6];
-
     values["c_ya_al"] = c_ya_al;
     values["c_xa0"] = c_xa0;
 
+    values["V_c"] = y[7];
+    values["TH_c"] = y[8];
+    values["e_c"] = y[9];
+    values["r"] = y[10];
+    values["x_c"] = y[11];
+    values["y_c"] = y[12];
+
     results[0] = dVdt(values);
-    results[1] = dTHdt(values);
+    results[1] = t < t_l ? dTHdt(values) : dTHdt_approach(values);
     results[2] = dw_zdt(values);
     results[3] = dthdt(values);
     results[4] = dydt(values);
     results[5] = dxdt(values);
     results[6] = dmdt(values);
+
+    results[7] = dV_cdt(values);
+    results[8] = dTH_cdt(values);
+    results[9] = t < t_l ? de_cdt(values) : de_cdt_approach(values);
+    results[10] = drdt(values);
+    results[11] = dx_cdt(values);
+    results[12] = dy_cdt(values);
 
     // std::cout << "dVdt: " << y[0] << std::endl;
     // std::cout << "dVdt: " << y[0] << std::endl;

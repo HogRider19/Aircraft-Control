@@ -32,10 +32,63 @@ void plotParameters(
     plt::show();
 }
 
+void plotTargetParameters(std::vector<double> x, std::vector<std::vector<double>> y)
+{
+    std::vector<std::string> titles = {
+        "V", "TH", "w_z",
+        "th", "y", "x", "m",
+
+        "V_c", "TH_c", "e_c",
+        "r", "x_c", "y_c"
+    };
+
+    // for (int i = 0; i < 4; i++)
+    // {
+    //     plt::figure(i + 1);
+    //     plt::plot(x, y[i]);
+    //     plt::title(titles[i]);
+    //     plt::grid(true);
+    // }
+
+    for (int i = 9; i < 11; i++)
+    {
+         plt::figure(i + 1);
+         plt::plot(x, y[i]);
+         plt::title(titles[i]);
+         plt::grid(true);
+    }
+
+    plt::figure(5);
+    plt::plot(y[5], y[4], {{"label", "Aircraft"}});
+    plt::plot(y[11], y[12], {{"label", "Target"}});
+
+    plt::title("y(x)");
+    plt::grid(true);
+    plt::legend();
+
+    //
+    std::vector<double> r_real;
+    for (int i = 0; i < y[5].size(); i++)
+        r_real.push_back(
+            sqrt(
+                pow(y[5][i] - y[11][i], 2) + pow(y[4][i] - y[12][i], 2)
+            )
+        );
+
+    plt::figure(6);
+    plt::plot(x, r_real, {{"label", "Aircraft"}});
+
+    plt::title("r_real");
+    plt::grid(true);
+    //
+
+    plt::show();
+}
+
 std::vector<std::vector<double>> transformResults(std::vector<std::vector<double>> results)
 {
     std::vector<std::vector<double>> resultsTransform;
-    for (int k = 0; k < 7; k++)
+    for (int k = 0; k < 13; k++)
     {
         std::vector<double> temp;
         for (int i = 0; i < results.size(); i++)
