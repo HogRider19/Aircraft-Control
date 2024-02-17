@@ -1,96 +1,42 @@
 #include "equations.h"
 
-
-double get_al(std::map<std::string, double> v)
-{
-    return v["th"] - v["TH"];
+double sign(double val) {
+    if (val > 0)
+        return 1;
+    else if(val == 0)
+        return 0;
+    
+    return -1;
 }
 
-double get_q(std::map<std::string, double> v)
-{
-    return 0.5 * pow(v["V"], 2) * 1.18 * exp(-v["y"] / 10000);
+double getAltha_(std::map<std::string, double> v){
+    double altha = v["x2"] - v["x1"];
+    if(fabs(altha) <= Altha_max)
+        return altha;
+        
+    return Altha_max * sign(altha);
 }
 
-double get_f_c(std::map<std::string, double> v){
-    return v["e_c"] - v["TH"];
+double getTH(std::map<std::string, double> v){
+    return (10000 - v["x5"]) / (b_val - V_val * v["t"]);
 }
 
-/*   
-    Equations for the aircraft
-*/
-
-double dVdt(std::map<std::string, double> v){
-    double al = get_al(v);
-    double q = get_q(v);
-    return P_val*cos(al) / v["m"] - (v["c_xa0"] + A_val * pow(al, 2)) * q * S_val / v["m"] - g_val * sin(v["TH"]);
+double dx1(std::map<std::string, double> v){
+    return K_val * getAltha_(v);
 }
 
-double dTHdt(std::map<std::string, double> v){
-    double al = get_al(v);
-    double q = get_q(v);
-    return P_val*sin(al) / (v["m"] * v["V"]) + v["c_ya_al"]*q*S_val*al / (v["m"] * v["V"]) - g_val * cos(v["TH"]) / v["V"];
+double dx2(std::map<std::string, double> v){
+    return v["x3"];
 }
 
-double dTHdt_approach(std::map<std::string, double> v){
-    return dVdt(v) / v["V"] * tan(v["e_c"] - v["TH"]);
+double dx3(std::map<std::string, double> v){
+    return l_val * v["x1"] - l_val * v["x2"] - M_val * v["x3"] + n_val * v["x4"];
 }
 
-double dTHdt_proportial(std::map<std::string, double> v, double k = 1){
-    return k * de_cdt(v);
+double dx4(std::map<std::string, double> v){
+    return -k_t_val * v["x4"] - i_1_val * v["x2"] - i_2_val*v["x3"] + s_val * (getTH(v) - v["x1"]);
 }
 
-double dw_zdt(std::map<std::string, double> v){
-    double al = get_al(v);
-    double q = get_q(v);
-    return (m_z_al*al + m_z_wz * L_val/ v["V"] *  v["w_z"] + m_z_delb*(del_b * 3.14 / 180.0))*q*S_val*L_val/I_z;
+double dx5(std::map<std::string, double> v){
+    return V_val * sin(v["x1"]);
 }
-
-double dthdt(std::map<std::string, double> v){
-    return v["w_z"];
-}
-
-double dydt(std::map<std::string, double> v){
-    return v["V"]*sin(v["TH"]);
-}
-
-double dxdt(std::map<std::string, double> v){
-    return v["V"]*cos(v["TH"]);
-}
-
-double dmdt(std::map<std::string, double> v){
-    return -m_c;
-}
-
-/*   
-    Equations for the target
-*/
-
-double dV_cdt(std::map<std::string, double> v){
-    return 0;
-};
-
-double dTH_cdt(std::map<std::string, double> v){
-    return 0;
-};
-
-double dx_cdt(std::map<std::string, double> v){
-    return v["V_c"]*cos(v["TH_c"]);
-};
-
-double dy_cdt(std::map<std::string, double> v){
-    return v["V_c"]*sin(v["TH_c"]);
-};
-
-double drdt(std::map<std::string, double> v){
-    double f_c = get_f_c(v);
-    return v["V_c"] * cos(v["e_c"] - v["TH_c"]) - v["V"] * cos(v["e_c"] - v["TH"]);
-};
-
-double de_cdt(std::map<std::string, double> v){
-    double f_c = get_f_c(v); 
-    return (-v["V_c"] * sin(v["e_c"] - v["TH_c"]) + v["V"] * sin(v["e_c"] - v["TH"])) / v["r"];
-};
-
-double de_cdt_approach(std::map<std::string, double> v){
-    return 0;
-};

@@ -11,54 +11,19 @@ void systemOfEquations(
 {
     std::map<std::string, double> values = std::map<std::string, double>();
     
-    values["V"] = y[0];
-    values["TH"] = y[1];
-    values["w_z"] = y[2];
-    values["th"] = y[3];
-    values["y"] = y[4];
-    values["x"] = y[5];
-    values["m"] = y[6];
-    values["c_ya_al"] = c_ya_al;
-    values["c_xa0"] = c_xa0;
+    values["x1"] = y[0];
+    values["x2"] = y[1];
+    values["x3"] = y[2];
+    values["x4"] = y[3];
+    values["x5"] = y[4];
+    values["x6"] = y[5];
 
-    values["V_c"] = y[7];
-    values["TH_c"] = y[8];
-    values["e_c"] = y[9];
-    values["r"] = y[10];
-    values["x_c"] = y[11];
-    values["y_c"] = y[12];
 
-    results[0] = dVdt(values);
-    results[2] = dw_zdt(values);
-    results[3] = dthdt(values);
-    results[4] = dydt(values);
-    results[5] = dxdt(values);
-    results[6] = dmdt(values);
-
-    results[7] = dV_cdt(values);
-    results[8] = dTH_cdt(values);
-    results[9] = de_cdt(values);
-    results[10] = drdt(values);
-    results[11] = dx_cdt(values);
-    results[12] = dy_cdt(values);
-
-    if (t >= t_l)
-    {
-        #ifdef PARALLEL_APPROACH
-            //results[1] = dTHdt_approach(values);
-            results[1] = dTHdt_proportial(values, 30);
-        #else
-            #ifdef PROPORTIAL_APPROACH
-                results[1] = dTHdt_proportial(values, 2);
-            #else
-                throw std::runtime_error("No targeting method selected!");
-            #endif
-        #endif
-    }
-    else
-    {
-        results[1] = dTHdt(values);
-    }
+    results[0] = dx1(values);
+    results[2] = dx2(values);
+    results[3] = dx3(values);
+    results[4] = dx4(values);
+    results[5] = dx5(values);
 
     // std::cout << "dVdt: " << y[0] << std::endl;
     // std::cout << "dVdt: " << y[0] << std::endl;
@@ -155,39 +120,11 @@ void eulerSystem(
     double pointInterval = (t1 - t0) / MAX_PLOT_POINTS_COUNT;
     double prevSavedT = t0;
 
-    
-    // Только для наведения (колхоз)
-    #ifdef MAX_DISTANCING
-        double minDist = std::numeric_limits<double>::max( );    
-    #endif
-    //
 
 
     std::vector<double> yGlobTemp = y1.back();
     for (double t = t0; t < t1; t += step)
     {
-        // Только для наведения (колхоз)
-        #ifdef MAX_DISTANCING
-            double dist = fabs(y1.back()[10]);
-            if (t > t_l && dist - minDist > MAX_DISTANCING)
-            {
-                std::cout << "Distance interruption! T = " << t << std::endl;
-                break;
-            }
-            
-            if (dist < minDist)
-                minDist = dist;
-        #endif
-
-        #ifdef MIN_DISTANCING
-            if (t > t_l && fabs(y1.back()[10]) < MIN_DISTANCING)
-            {
-                std::cout << "Hit interruption! T = " << t << std::endl;
-                break;
-            }
-        #endif
-        //
-
 
         std::vector<double> yTemp(n);
 
