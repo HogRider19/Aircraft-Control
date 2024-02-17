@@ -3,6 +3,12 @@
 
 /* ------------------------------------------------------------- DNIT (3) */
 
+#define x1_0 1.0
+#define x2_0 0.0
+#define x3_0 0.0
+#define x4_0 0.0
+#define x5_0 0.0
+
 #define s_val 1.0
 #define i_1_val 1.0
 #define i_2_val 1.0
@@ -21,3 +27,8 @@
 #define M_1 0.0
 #define M_2 0.0
 #define U_val 0.0
+
+#define T_0 0.0
+#define T_1 30.0
+
+#define h_val 0.01

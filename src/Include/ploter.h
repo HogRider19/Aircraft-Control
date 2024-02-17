@@ -6,7 +6,7 @@
 #include "consts.h"
 
 
-void plotParameters(std::vector<double>, std::vector<std::vector<double>>, std::vector<std::vector<double>>, std::vector<std::vector<double>>);
+void plotParameters(std::vector<double>, std::vector<std::vector<double>>);
 void plotTargetParameters(std::vector<double>, std::vector<std::vector<double>>);
 
 
