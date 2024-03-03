@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 class MealyMachine {
 public:
@@ -25,37 +26,42 @@ private:
     };
 };
 
+
+bool callNextState(MealyMachine& mealyMachine)
+{
+    std::string input;
+
+    std::cout << "Inputs (Example: 0 1 1): ";
+    std::getline(std::cin, input);
+
+    std::istringstream iss(input);
+    bool input1, input2, input3;
+
+    if (!(iss >> input1 >> input2 >> input3) ||
+        (input1 != 0 && input1 != 1) ||
+        (input2 != 0 && input2 != 1) ||
+        (input3 != 0 && input3 != 1)) {
+        std::cout << "Invalid input" << std::endl;
+        return true;
+    }
+
+
+    mealyMachine.processInput(input1, input2, input3);
+    mealyMachine.printState();
+
+    return false;
+};
+
+
 int main() {
     MealyMachine mealyMachine;
 
-    bool input1, input2, input3;
-
-    input1 = true; input2 = false; input3 = true;
-
-    std::cout << "Input: " << input1 << ", " << input2 << ", " << input3 << std::endl;
-    mealyMachine.processInput(input1, input2, input3);
-    mealyMachine.printState();
-
-    std::cout << std::endl;
-
-    input1 = false; input2 = true; input3 = false;
-    std::cout << "Input: " << input1 << ", " << input2 << ", " << input3 << std::endl;
-    mealyMachine.processInput(input1, input2, input3);
-    mealyMachine.printState();
-
-    std::cout << std::endl;
-
-    input1 = false; input2 = false; input3 = true;
-    std::cout << "Input: " << input1 << ", " << input2 << ", " << input3 << std::endl;
-    mealyMachine.processInput(input1, input2, input3);
-    mealyMachine.printState();
-
-    std::cout << std::endl;
-
-    input1 = false; input2 = false; input3 = false;
-    std::cout << "Input: " << input1 << ", " << input2 << ", " << input3 << std::endl;
-    mealyMachine.processInput(input1, input2, input3);
-    mealyMachine.printState();
+    while (true)
+    {
+        bool isComplete = callNextState(mealyMachine);
+        if (isComplete)
+            break;
+    }
 
     return 0;
 }
