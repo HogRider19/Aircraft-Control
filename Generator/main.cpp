@@ -9,10 +9,7 @@
 
 #define forI(i, c) for(size_t i = 0; i < c.size(); i++)
 
-// #define D 0.5
-// #define a 2.0
-// #define h 0.002
-// #define n 10000.0
+
 
 #define D 1.0
 #define a 0.1
@@ -76,13 +73,13 @@ std::vector<double> getCore(std::vector<double> x, std::vector<double> y) {
 
         //std::cout << sum / (x.size() - (n + 1 - j)) << std::endl;
 
-        k.push_back(sum / (x.size() / 10));
-        //k.push_back(sum / (x.size() + 1 - j));
+        //k.push_back(sum / (x.size() / 10));
+        k.push_back(sum / (x.size() + 1 - j));
     }
 
     
-    double d = y[0] - k[0];
-    forI(i, k) k[i] += d;
+    // double d = y[0] - k[0];
+    // forI(i, k) k[i] += d;
     return k;
 }
 

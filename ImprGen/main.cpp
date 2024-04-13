@@ -91,7 +91,7 @@ std::vector<double> getCore(std::vector<double> x, std::vector<double> y) {
 
     
     double d = y[0] - k[0];
-    forI(i, k) k[i] += 0.5;
+    forI(i, k) k[i] += 0.4;
     return k;
 }
 
@@ -197,20 +197,48 @@ double colmagorivCheck(std::vector<double>& dataX,
     return max;
 }
 
-void getTheoryDistributionFunction(std::vector<double>& x,
-     std::vector<double>& y,
-     std::vector<double>& realX)
+void getTheoryDistributionFunction(std::vector<double>& realX,
+     std::vector<double>& x,
+     std::vector<double>& y)
 {
-    for (int i = 0; i < realX.size(); i++)
+    for (auto _x : realX)
     {
-        x.push_back(realX[i]);
-        y.push_back(atan(realX[i]) * 3 / 2 - 0.28);
+        x.push_back(_x);
+        y.push_back(atan(_x + 1.22));
     }
 }
 
+void getDistributionFunction(
+    const std::vector<double>& v,
+    std::vector<double>& resX,
+    std::vector<double>& resY)
+{
+    std::vector<double> sortedV = v;
+    std::sort(sortedV.begin(), sortedV.end());
+
+    int s = sortedV.size();
+    for(int i = 0; i < s; i++)
+    {
+        double val = sortedV[i];
+        int count = 0;
+        for(int j = 0; j < s; j++)
+        {
+            if(sortedV[j] <= val)
+            {
+                count++;
+            }
+        }
+        resX.push_back(val);
+        resY.push_back(count / static_cast<double>(s));
+    }
+}
+
+
 int main() {
 
-    int rndCount = 1000;
+    // 4
+    srand(4);
+    int rndCount = 100000;
     std::vector<double> rnd(rndCount);
 
     for (auto& item : rnd) 
@@ -219,8 +247,6 @@ int main() {
         for(int i = 0; i < 12; i++) sum += getRandom(0, 1);
         item = sum - 6;
     }
-    
-    //std::sort(rnd.begin(), rnd.end());
 
     double t0 = 0; 
     double step = h; 
@@ -240,38 +266,34 @@ int main() {
         th_y.push_back(y);
     }
 
-    //std::sort(Xt_y.begin(), Xt_y.end());
-
     std::vector<double> core_y = getCore(Xt_x, Xt_y);    
     std::vector<double> core_x {th_x.begin(), th_x.begin() + core_y.size()};
-
-    // std::vector<double> core_y = Xt_y;
-    // std::vector<double> core_x = Xt_x;
-    
 
     std::vector<double> F_y = applay(Xt_y, F);
     std::vector<double> F_x {Xt_x.begin(), Xt_x.begin() + Xt_x.size()};
 
-    std::cout << "Expected value before: " << getExpectedValue(F_y, 100) << std::endl;
+    std::cout << "Expected value before: " << getExpectedValue(F_y, 1000) << std::endl;
 
     std::vector<double> new_F_y = applay(F_y, reverse);
     std::vector<double> new_F_x {th_x.begin(), th_x.begin() + core_y.size()};
 
-    std::cout << "Expected value after: " << getExpectedValue(new_F_y, 100) << std::endl;
+    std::cout << "Expected value after: " << getExpectedValue(new_F_y, 1000) << std::endl;
 
     //
+    std::vector<double> realTheoryX;
+    std::vector<double> realTheoryY;
+    getDistributionFunction(new_F_y, realTheoryX, realTheoryY);
+
     std::vector<double> theoryX;
     std::vector<double> theoryY;
-    getTheoryDistributionFunction(theoryX, theoryY, new_F_x);
-
+    getTheoryDistributionFunction(realTheoryX, theoryX, theoryY);
     //
-
 
     std::sort(F_y.begin(), F_y.end());
     std::sort(Xt_y.begin(), Xt_y.end());
     std::sort(new_F_y.begin(), new_F_y.end());
 
-    double c = colmagorivCheck(new_F_x, new_F_y, theoryX, theoryY, 100);
+    double c = colmagorivCheck(realTheoryX, realTheoryY, theoryX, theoryY, 0);
     std::cout << "colmagorivCheck Index: " << c <<  std::endl;
 
     if (c < 0.162)
@@ -279,21 +301,22 @@ int main() {
     else
         std::cout << "colmagorivCheck: Failed" << std::endl;
 
-    double border = 1.0;
+    double border = 0.8;
+    int nn = 0;
     int borderIndex = core_x.size() - 1;
     forI(i, core_x) if (core_x[i] > border) { borderIndex = i; break; }
     core_x = {core_x.begin(), core_x.begin() + borderIndex};
     core_y = {core_y.begin(), core_y.begin() + borderIndex};
     th_x = {th_x.begin(), th_x.begin() + borderIndex};
     th_y = {th_y.begin(), th_y.begin() + borderIndex};
-    new_F_x = {new_F_x.begin(), new_F_x.begin() + borderIndex};
-    new_F_y = {new_F_y.begin(), new_F_y.begin() + borderIndex};
+    new_F_x = {new_F_x.begin() + nn, new_F_x.begin() + borderIndex};
+    new_F_y = {new_F_y.begin() + nn, new_F_y.begin() + borderIndex};
     F_x = {F_x.begin(), F_x.begin() + borderIndex};
     F_y = {F_y.begin(), F_y.begin() + borderIndex};
     Xt_x = {Xt_x.begin(), Xt_x.begin() + borderIndex};
     Xt_y = {Xt_y.begin(), Xt_y.begin() + borderIndex};
-    theoryX = {theoryX.begin(), theoryX.begin() + borderIndex};
-    theoryY = {theoryY.begin(), theoryY.begin() + borderIndex};
+    // theoryX = {theoryX.begin(), theoryX.begin() + borderIndex};
+    // theoryY = {theoryY.begin(), theoryY.begin() + borderIndex};
 
     // plt::figure(1);
     // plt::plot(Xt_x, Xt_y);
@@ -310,12 +333,20 @@ int main() {
     plt::plot(core_x, core_y);
     plt::grid(true);
 
-    // plt::figure(2);
-    // plt::plot(theoryX, theoryY);
-    // plt::plot(new_F_x, new_F_y);
-    // //plt::plot(F_x, F_y);
-    // plt::grid(true);
+    theoryX = {theoryX.begin(), theoryX.begin() + 723};
+    theoryY = {theoryY.begin(), theoryY.begin() + 723};
+
+    plt::figure(2);
+    plt::plot(theoryX, theoryY);
+    plt::plot(realTheoryX, realTheoryY);
+    plt::grid(true);
     plt::show();
+
+    // plt::figure(3);
+    // plt::plot(new_F_x, new_F_y);
+    // //plt::plot(realTheoryX, realTheoryY);
+    // plt::grid(true);
+    // plt::show();
 
     return 0;
 }
