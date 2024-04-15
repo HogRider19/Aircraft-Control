@@ -11,13 +11,8 @@
 
 #define D 1.0
 #define a 0.1
-#define h 0.05
+#define h 0.005
 #define n 10000.0
-
-// #define D 1.0
-// #define a 0.1
-// #define h 0.5
-// #define n 70000.0
 
 namespace plt = matplotlibcpp;
 
@@ -85,13 +80,13 @@ std::vector<double> getCore(std::vector<double> x, std::vector<double> y) {
 
         //std::cout << sum / (x.size() - (n + 1 - j)) << std::endl;
 
-        //k.push_back(sum / (x.size() * 3));
+        //k.push_back(sum / (x.size() / 10));
         k.push_back(sum / (x.size() + 1 - j));
     }
 
     
     double d = y[0] - k[0];
-    forI(i, k) k[i] += 0.55;
+    forI(i, k) k[i] += 0.45;
     return k;
 }
 
@@ -185,13 +180,11 @@ double colmagorivCheck(std::vector<double>& dataX,
     std::vector<double>& dataY,
     std::vector<double>& theoryDataX,
     std::vector<double>& theoryDataY,
-    int from,
-    int to)
+    int from)
 {
     double max = 0;
     for (size_t i = from; i < dataX.size(); i++)
     {
-        if (i > to) break;
         double c = std::fabs(dataY[i] - theoryDataY[i]);
         if (c > max)
             max = c;
@@ -199,20 +192,49 @@ double colmagorivCheck(std::vector<double>& dataX,
     return max;
 }
 
-void getTheoryDistributionFunction(std::vector<double>& x,
-     std::vector<double>& y,
-     std::vector<double>& realX)
+void getTheoryDistributionFunction(std::vector<double>& realX,
+     std::vector<double>& x,
+     std::vector<double>& y)
 {
-    for (int i = 0; i < realX.size(); i++)
+    for (auto _x : realX)
     {
-        x.push_back(realX[i]);
-        y.push_back(-(realX[i] - 8.0) * realX[i] * 16.0 / 256.0);
+        //std::cout << _x << std::endl;
+        x.push_back(_x);
+        y.push_back(-(_x - 8.0) * _x * 0.044 + 0.3);
     }
 }
 
+void getDistributionFunction(
+    const std::vector<double>& v,
+    std::vector<double>& resX,
+    std::vector<double>& resY)
+{
+    std::vector<double> sortedV = v;
+    std::sort(sortedV.begin(), sortedV.end());
+
+    int s = sortedV.size();
+    for(int i = 0; i < s; i++)
+    {
+        double val = sortedV[i];
+        int count = 0;
+        for(int j = 0; j < s; j++)
+        {
+            if(sortedV[j] <= val)
+            {
+                count++;
+            }
+        }
+        resX.push_back(val);
+        resY.push_back(count / static_cast<double>(s));
+    }
+}
+
+
 int main() {
 
-    int rndCount = 1000;
+    // 11
+    srand(22);
+    int rndCount = 100000;
     std::vector<double> rnd(rndCount);
 
     for (auto& item : rnd) 
@@ -221,11 +243,9 @@ int main() {
         for(int i = 0; i < 12; i++) sum += getRandom(0, 1);
         item = sum - 6;
     }
-    
-    //std::sort(rnd.begin(), rnd.end());
 
     double t0 = 0; 
-    double step = h; 
+    double step = h / 3; 
     double endTime = 3 / a;
 
     std::vector<double> Xt_x;
@@ -242,38 +262,30 @@ int main() {
         th_y.push_back(y);
     }
 
-    //std::sort(Xt_y.begin(), Xt_y.end());
-
     std::vector<double> core_y = getCore(Xt_x, Xt_y);    
     std::vector<double> core_x {th_x.begin(), th_x.begin() + core_y.size()};
-
-    // std::vector<double> core_y = Xt_y;
-    // std::vector<double> core_x = Xt_x;
-    
 
     std::vector<double> F_y = applay(Xt_y, F);
     std::vector<double> F_x {Xt_x.begin(), Xt_x.begin() + Xt_x.size()};
 
-    std::cout << "Expected value before: " << getExpectedValue(F_y, 100) << std::endl;
+    std::cout << "Expected value before: " << getExpectedValue(F_y, 1000) << std::endl;
 
     std::vector<double> new_F_y = applay(F_y, reverse);
     std::vector<double> new_F_x {th_x.begin(), th_x.begin() + core_y.size()};
 
-    std::cout << "Expected value after: " << getExpectedValue(new_F_y, 100) << std::endl;
+    std::cout << "Expected value after: " << getExpectedValue(new_F_y, 1000) << std::endl;
 
     //
+    std::vector<double> realTheoryX;
+    std::vector<double> realTheoryY;
+    getDistributionFunction(new_F_y, realTheoryX, realTheoryY);
+
     std::vector<double> theoryX;
     std::vector<double> theoryY;
-    getTheoryDistributionFunction(theoryX, theoryY, new_F_x);
-
+    getTheoryDistributionFunction(realTheoryX, theoryX, theoryY);
     //
 
-
-    std::sort(F_y.begin(), F_y.end());
-    std::sort(Xt_y.begin(), Xt_y.end());
-    std::sort(new_F_y.begin(), new_F_y.end());
-
-    double c = colmagorivCheck(new_F_x, new_F_y, theoryX, theoryY, 0, 50);
+    double c = colmagorivCheck(realTheoryX, realTheoryY, theoryX, theoryY, 0);
     std::cout << "colmagorivCheck Index: " << c <<  std::endl;
 
     if (c < 0.162)
@@ -281,7 +293,7 @@ int main() {
     else
         std::cout << "colmagorivCheck: Failed" << std::endl;
 
-    double border = 2.5;
+    double border = 15.0;
     int borderIndex = core_x.size() - 1;
     forI(i, core_x) if (core_x[i] > border) { borderIndex = i; break; }
     core_x = {core_x.begin(), core_x.begin() + borderIndex};
@@ -294,29 +306,26 @@ int main() {
     F_y = {F_y.begin(), F_y.begin() + borderIndex};
     Xt_x = {Xt_x.begin(), Xt_x.begin() + borderIndex};
     Xt_y = {Xt_y.begin(), Xt_y.begin() + borderIndex};
-    theoryX = {theoryX.begin(), theoryX.begin() + borderIndex};
-    theoryY = {theoryY.begin(), theoryY.begin() + borderIndex};
-
-    // plt::figure(1);
-    // plt::plot(Xt_x, Xt_y);
-    // plt::plot(th_x, th_y);
-    // plt::plot(core_x, core_y);
-    // plt::plot(F_x, F_y);
-    // plt::plot(new_F_x, new_F_y);
-    // plt::plot(theoryX, theoryY);
-    // plt::grid(true);
-    // plt::show();
 
     plt::figure(1);
+    plt::title("Кореляционная функция");
     plt::plot(th_x, th_y);
     plt::plot(core_x, core_y);
     plt::grid(true);
 
-    // plt::figure(2);
-    // plt::plot(theoryX, theoryY);
-    // plt::plot(new_F_x, new_F_y);
-    // //plt::plot(F_x, F_y);
-    // plt::grid(true);
+    // theoryX = {theoryX.begin(), theoryX.begin() + 723};
+    // theoryY = {theoryY.begin(), theoryY.begin() + 723};
+
+    plt::figure(2);
+    plt::title("Функция распределения");
+    plt::plot(theoryX, theoryY);
+    plt::plot(realTheoryX, realTheoryY);
+    plt::grid(true);
+
+    plt::figure(3);
+    plt::title("Процесс");
+    plt::plot(new_F_x, new_F_y);
+    plt::grid(true);
     plt::show();
 
     return 0;

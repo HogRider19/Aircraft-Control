@@ -289,10 +289,6 @@ int main() {
     getTheoryDistributionFunction(realTheoryX, theoryX, theoryY);
     //
 
-    std::sort(F_y.begin(), F_y.end());
-    std::sort(Xt_y.begin(), Xt_y.end());
-    std::sort(new_F_y.begin(), new_F_y.end());
-
     double c = colmagorivCheck(realTheoryX, realTheoryY, theoryX, theoryY, 0);
     std::cout << "colmagorivCheck Index: " << c <<  std::endl;
 
@@ -315,20 +311,9 @@ int main() {
     F_y = {F_y.begin(), F_y.begin() + borderIndex};
     Xt_x = {Xt_x.begin(), Xt_x.begin() + borderIndex};
     Xt_y = {Xt_y.begin(), Xt_y.begin() + borderIndex};
-    // theoryX = {theoryX.begin(), theoryX.begin() + borderIndex};
-    // theoryY = {theoryY.begin(), theoryY.begin() + borderIndex};
-
-    // plt::figure(1);
-    // plt::plot(Xt_x, Xt_y);
-    // plt::plot(th_x, th_y);
-    // plt::plot(core_x, core_y);
-    // plt::plot(F_x, F_y);
-    // plt::plot(new_F_x, new_F_y);
-    // plt::plot(theoryX, theoryY);
-    // plt::grid(true);
-    // plt::show();
 
     plt::figure(1);
+    plt::title("Кореляционная функция");
     plt::plot(th_x, th_y);
     plt::plot(core_x, core_y);
     plt::grid(true);
@@ -337,16 +322,16 @@ int main() {
     theoryY = {theoryY.begin(), theoryY.begin() + 723};
 
     plt::figure(2);
+    plt::title("Функция распределения");
     plt::plot(theoryX, theoryY);
     plt::plot(realTheoryX, realTheoryY);
     plt::grid(true);
-    plt::show();
 
-    // plt::figure(3);
-    // plt::plot(new_F_x, new_F_y);
-    // //plt::plot(realTheoryX, realTheoryY);
-    // plt::grid(true);
-    // plt::show();
+    plt::figure(3);
+    plt::title("Процесс");
+    plt::plot(new_F_x, new_F_y);
+    plt::grid(true);
+    plt::show();
 
     return 0;
 }
