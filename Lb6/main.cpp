@@ -1,3 +1,5 @@
+#define forI(i, p) for(size_t i = 0; i < p.size(); i++)
+#define pr(m) std::cout << m <<std::endl
 #define _USE_MATH_DEFINES
 #define WITHOUT_NUMPY
 
@@ -7,154 +9,32 @@
 #include <random>
 #include "matplotlibcpp.h"
 
-#define forI(i, c) for(size_t i = 0; i < c.size(); i++)
-
-#define D 1.0
+#define D 0.5
 #define a 2.0
 #define h 0.002
-#define n 10000.0
 
 namespace plt = matplotlibcpp;
 
-double getRandom(double t) {
-    return (((double)std::rand() / (double)RAND_MAX) - 0.5) * 1;
-}
+int step_num = 1;
 
-double getRandom(double from, double to) {
+double getRandom(double from = 0, double to = 1) {
     return (((double)std::rand() / (double)RAND_MAX) * (to - from) + from) * 1;
 }
 
+std::vector<double> getRow(int count){
+    std::vector<double> r;
+    for(int i = 0; i < count; i++)
+        r.push_back(i);
+    return r;
+}
+
 double correlationFunction(double t) {
-    //return (1 / sqrt(2 * M_PI) * exp(-pow(t, 2) / 2));
-    return D * exp(-a * t);
+    //return D * exp(-a * t);
+    return 1 * exp(-a * t);
 }
 
-
-double f(double x, double t) {
-    double s0 = h;
-    double kf = sqrt((2 * D) / (a * s0));
-    double tf = 1 / a;
-
-    return -1 / tf * x + kf / tf * t;
-}
-
-double eulerMethod(double x0, double t0, double step, double endTime, std::vector<double>& xRes, std::vector<double>& res, std::vector<double> rnd) 
-{
-    double x = x0;
-    double t = t0;
-    
-    int r = 0;
-
-    while (t < endTime) {
-        double dx = step * f(x, rnd[r]);
-        r++;
-        x += dx;
-        t += step;
-        xRes.push_back(t);
-        res.push_back(x);
-    }
-    
-    return x;
-}
-
-std::vector<double> getCore(std::vector<double> x, std::vector<double> y) {
-    // Mx = 1 / n * sum(Xi)
-    // Dx = 1 / (n - 1) * sum(Xi - Mx)^2
-    // K(t) = 1 / (n + 1 - j) * sum ((Xi - Mx) (Xi+j - Mx))
-
-    double Mx = 0;
-    forI(i, y) Mx += y[i];
-    Mx = (Mx / ((double)x.size()));
-
-    double Dx = 0;
-    forI(i, y) Dx += pow((y[i] - Mx), 2);
-    Dx = (Dx / (n - 1));
-
-    std::vector<double> k;
-    double delta = x[1] - x[0];
-    for (int j = 0; j < x.size(); j++)
-    {
-        double sum = 0;
-        for(int i = 0; i < x.size() - j; i++)
-            sum += (y[i] - Mx) * (y[i + j] - Mx);
-
-        //std::cout << sum / (x.size() - (n + 1 - j)) << std::endl;
-
-        //k.push_back(sum / (x.size() / 10));
-        k.push_back(sum / (x.size() + 1 - j));
-    }
-
-    
-    double d = y[0] - k[0];
-    forI(i, k) k[i] += 0.4;
-    return k;
-}
-
-double factorial(double N) {
-    double F = 1;
-    for(double i = 1; i <= N; ++i) {
-        F *= i;
-    }
-    return F;
-}
-
-double F(double x)
-{
-    double res = 0;
-    double del = 1;
-    for (int i = 0; i < 20; i++)
-    {
-        res += del * (pow(x, 2*i) / (pow(2, i) * (1 + 2*i) * factorial(i - 1))) * 3;
-        del *= -1;
-
-        //std::cout << res <<  std::endl;
-    }
-    return res * x / sqrt(2 * M_PI);
-}
-
-
-std::vector<double> applay(std::vector<double> vals, double (*fun)(double))
-{
-    std::vector<double> res;
-    forI(i, vals) res.push_back(fun(vals[i]));
-    return res;
-}
-
-void GetDensity(std::vector<double>& resultX,
-    std::vector<double>& resultY,
-    std::vector<double>& values,
-    int co)
-{
-    double min = *std::min_element(begin(values), end(values));
-    double max = *std::max_element(begin(values), end(values));
-    double delta = (max - min) / co;
-
-    for (double i = min; i <= max; i += delta)
-    {
-        resultX.push_back(i);
-
-        int c = 0;
-        for (size_t index = 0; index < values.size(); index++)
-        {
-            if (values[index] > i && values[index] <= i + delta)
-                c++;
-        }
-        resultY.push_back(c);
-    }
-}
-
-double getExpectedValue(std::vector<double> values, int co)
-{
-    std::vector<double> counts;
-    std::vector<double> vals;
-
-    GetDensity(vals, counts, values, co);
-
-    double res = 0;
-    for (size_t index = 0; index < vals.size(); index++)
-        res += vals[index] * (((double)counts[index]) / (double)values.size());
-
-    return res;
+double distributionFunction(double t) {
+    return tan(t);
 }
 
 double reverse(double x)
@@ -170,45 +50,59 @@ double reverse(double x)
 
         x_i = arctan(e_i);
     */
-
-    //return atan(x);
     return atan(x);
 }
 
 
-double colmagorivCheck(std::vector<double>& dataX,
-    std::vector<double>& dataY,
-    std::vector<double>& theoryDataX,
-    std::vector<double>& theoryDataY,
-    int from)
+std::vector<double> applay(std::vector<double> vals, double (*fun)(double))
 {
-    double max = 0;
-    for (size_t i = from; i < dataX.size(); i++)
-    {
-        double c = std::fabs(dataY[i] - theoryDataY[i]);
-        if (c > max)
-            max = c;
-    }
-    return max;
+    std::vector<double> res;
+    forI(i, vals) res.push_back(fun(vals[i]));
+    return res;
 }
 
-void getTheoryDistributionFunction(std::vector<double>& realX,
-     std::vector<double>& x,
-     std::vector<double>& y)
-{
-    for (auto _x : realX)
+void plotDensity(const std::vector<double>& y, int count = 100) {
+    if (y.size() < count) count = y.size();
+
+    double min_y = *std::min_element(y.begin(), y.end());
+    double max_y = *std::max_element(y.begin(), y.end());
+
+    std::vector<double> resY;
+    std::vector<double> resX;
+    resY.push_back(0);
+    resX.push_back((*std::min_element(y.begin(), y.end())));
+    for (int i = 0; i < count; i++)
     {
-        x.push_back(_x);
-        y.push_back(atan(_x + 1.22));
+        double step = (max_y - min_y) / count;
+        double ll = min_y + (double)i * step;
+        double hh = ll + step;
+
+        double c = 0;
+        forI(k, y) if (y[k] >= ll && y[k] < hh) c++;
+
+        resX.push_back(ll);
+        resY.push_back(c);
     }
+    resY.push_back(0);
+    resX.push_back((*std::max_element(y.begin(), y.end())));
+
+    plt::figure(1);
+    plt::title("pl* " + std::to_string(step_num));
+    plt::plot(resX, resY);
+    plt::grid(true);
 }
 
-void getDistributionFunction(
-    const std::vector<double>& v,
-    std::vector<double>& resX,
-    std::vector<double>& resY)
+void plotDistribution(const std::vector<double>& v, bool th = false)
 {
-    std::vector<double> sortedV = v;
+    std::vector<double> resX; 
+    std::vector<double> resY; 
+
+    // int b = v.size() < 3000 ? v.size() : 30000;
+
+    // std::vector<double> sortedV = {v.begin(), v.begin() + b};
+    // std::sort(sortedV.begin(), sortedV.end());
+
+    std::vector<double> sortedV = {v.begin(), v.end()};
     std::sort(sortedV.begin(), sortedV.end());
 
     int s = sortedV.size();
@@ -226,8 +120,97 @@ void getDistributionFunction(
         resX.push_back(val);
         resY.push_back(count / static_cast<double>(s));
     }
+
+    std::vector<double> resY_th = applay(resX, distributionFunction);
+
+    plt::figure(2);
+    plt::title("Распределение " + std::to_string(step_num));
+    plt::plot(resX, resY);
+    if (th) plt::plot(resX, resY_th);
+    plt::grid(true);
 }
 
+void plotSignal(const std::vector<double>& x, const std::vector<double>& y)
+{
+    plt::figure(3);
+    plt::title("Сигнал " + std::to_string(step_num));
+    plt::plot(x, y);
+    plt::grid(true);
+}
+
+void plotCore(std::vector<double> x, std::vector<double> y, double border = 3 / a, bool th = false) {
+    // Mx = 1 / n * sum(Xi)
+    // Dx = 1 / (n - 1) * sum(Xi - Mx)^2
+    // K(t) = 1 / (n + 1 - j) * sum ((Xi - Mx) (Xi+j - Mx))
+
+    double n = x.size();
+    double Mx = 0;
+    forI(i, y) Mx += y[i];
+    Mx = (Mx / ((double)x.size()));
+
+    double Dx = 0;
+    forI(i, y) Dx += pow((y[i] - Mx), 2);
+    Dx = (Dx / (n - 1));
+
+    std::vector<double> k;
+    double delta = x[1] - x[0];
+    for (int j = 0; j < x.size(); j++)
+    {
+        double sum = 0;
+        for(int i = 0; i < x.size() - j; i++)
+            sum += (y[i] - Mx) * (y[i + j] - Mx);
+
+        k.push_back(sum / (x.size() + 1 - j));
+    }
+
+    std::vector<double> xx = x;
+
+    int borderIndex = xx.size() - 1;
+    forI(i, xx) if (xx[i] > border) { borderIndex = i; break; }
+    xx = {xx.begin(), xx.begin() + borderIndex};
+    k = {k.begin(), k.begin() + borderIndex};
+
+    std::vector<double> k_th;
+    k_th = applay(xx, correlationFunction);
+
+    plt::figure(4);
+    plt::title("Кореляционная функция " + std::to_string(step_num));
+    plt::plot(xx, k);
+    if (th) plt::plot(xx, k_th);
+    plt::grid(true);
+}
+
+double f(double x, double rnd) {
+    double aa = a;
+    double DD = 1;
+    double hh = h;
+
+    double s0 = hh * DD;
+    double kf = sqrt((2 * DD) / (aa * s0));
+    double tf = 1 / aa;
+
+    return -1 / tf * x + kf / tf * rnd;
+}
+
+double formFilter(double x0, double t0, double step, double endTime,
+ std::vector<double>& xRes, std::vector<double>& res, std::vector<double> rnd) 
+{
+    double x = x0;
+    double t = t0;
+    
+    int r = 0;
+
+    while (t < endTime) {
+        double dx = step * f(x, rnd[r]);
+        r++;
+        x += dx;
+        t += step;
+        xRes.push_back(t);
+        res.push_back(x);
+    }
+    
+    return x;
+}
 
 int findX(double val, std::vector<double>& x, std::vector<double>& y)
 {
@@ -267,85 +250,102 @@ double colmagorivCheck(std::vector<double>& dataX,
     return max;
 }
 
+double factorial(double N) {
+    double F = 1;
+    for(double i = 1; i <= N; ++i) {
+        F *= i;
+    }
+    return F;
+}
+
+double erf(double x)
+{
+    double res = 0;
+    double step = x / 100;
+    for (double _x = 0; _x < fabs(x); _x += fabs(step))
+        res += exp(-_x * _x) * step;
+
+    return 2 / sqrt(M_PI) * res;
+}
+
+double F(double x)
+{
+    // double res = 0;
+    // double del = 1;
+    // for (int i = 0; i < 30; i++)
+    // {
+    //     res += del * (pow(x, 2*i) / (pow(2, i) * (1 + 2*i) * factorial(i - 1))) * 3;
+    //     del *= -1;
+    // }
+
+    // return (res * x / sqrt(2 * M_PI) + 1) / 2;
+    return (erf(x / sqrt(2)) + 1) * 0.5;
+}
+
+
+
+void getDistributionFunction(
+    const std::vector<double>& v,
+    std::vector<double>& resX,
+    std::vector<double>& resY)
+{
+    std::vector<double> sortedV = v;
+    std::sort(sortedV.begin(), sortedV.end());
+
+    int s = sortedV.size();
+    for(int i = 0; i < s; i++)
+    {
+        double val = sortedV[i];
+        int count = 0;
+        for(int j = 0; j < s; j++)
+        {
+            if(sortedV[j] <= val)
+            {
+                count++;
+            }
+        }
+        resX.push_back(val);
+        resY.push_back(count / static_cast<double>(s));
+    }
+}
+
 void GenerateSignal(int count, int seed, std::vector<double>& res)
 {
     srand(seed);
-    int rndCount = 100000;
+
+    double endt = h * count;
+    int rndCount = count;
     std::vector<double> rnd(rndCount);
 
-    for (auto& item : rnd) 
+    for (int i = 0; i < rndCount; i += 2) 
     {
-        double sum = 0;
-        for(int i = 0; i < 12; i++) sum += getRandom(0, 1);
-        item = sum - 6;
+        L1:
+        double e1 = getRandom(0, 1);
+        double e2 = getRandom(0, 1);
+
+        double v1 = 2 * e1 - 1;
+        double v2 = 2 * e2 - 1;
+        double s = v1 * v1 + v2 * v2;
+        if (s >= 1) goto L1;
+
+        double r = sqrt(-2 * log(s) / s);
+        rnd[i] = v1 * r;
+        rnd[i + 1] = v2 * r;
     }
 
-    double t0 = 0; 
-    double step = h; 
-    double endTime = 3 / a;
+    std::vector<double> step_2_x; 
+    std::vector<double> step_2_y;
+    formFilter(0, 0, h, endt, step_2_x, step_2_y, rnd);
 
-    std::vector<double> Xt_x;
-    std::vector<double> Xt_y;
-    eulerMethod(0, t0, h, count * h, Xt_x, Xt_y, rnd);
+    std::vector<double> step_3_x = step_2_x; 
+    std::vector<double> step_3_y = applay(step_2_y, F);
 
-    std::vector<double> F_y = applay(Xt_y, F);
-    std::vector<double> F_x {Xt_x.begin(), Xt_x.begin() + Xt_x.size()};
-
-    res = applay(F_y, reverse);
-}
-
-double ccc(int k)
-{
-    std::vector<double> v1;
-    std::vector<double> v2;
-    std::vector<double> v3;
-
-    for (int i = 0; i < 150; i++)
-    {
-        std::vector<double> signal;
-        GenerateSignal(30, i, signal);
-
-        v1.push_back(signal[10]);
-        v2.push_back(signal[15]);
-    }
-
-    GenerateSignal(v1.size(), k, v3);
-
-    std::vector<double> distr_v1_x;
-    std::vector<double> distr_v1_y;
-    getDistributionFunction(v1, distr_v1_x, distr_v1_y);
-
-    std::vector<double> distr_v3_x;
-    std::vector<double> distr_v3_y;
-    getDistributionFunction(v3, distr_v3_x, distr_v3_y);
-
-    double cIndex1 = colmagorivCheck(distr_v1_x, distr_v1_y, distr_v3_x, distr_v3_y);
-    std::cout << "[" << k << "]: " << cIndex1 << std::endl;
-    return cIndex1;
+    std::vector<double> step_4_x = step_3_x; 
+    res = applay(step_3_y, reverse);
 }
 
 int main() 
 {
-    // int kk = 0;
-    // double min = 10000;
-    // for (int k = 200; k < 300; k++)
-    // {
-    //     double c = ccc(k);
-    //     if (c < min)
-    //     {  
-    //         min = c;
-    //         kk = k;
-    //     }
-    // }
-
-    // std::cout << "Min: " << min << std::endl;
-    // std::cout << "Seed: " << kk << std::endl;
-
-    //return 0;
-
-    // 234
-    // 273
-
     std::vector<double> v1;
     std::vector<double> v2;
     std::vector<double> v3;
@@ -353,13 +353,13 @@ int main()
     for (int i = 0; i < 150; i++)
     {
         std::vector<double> signal;
-        GenerateSignal(110, i, signal);
+        GenerateSignal(100, i, signal);
 
-        v1.push_back(signal[10]);
-        v2.push_back(signal[15]);
+        v1.push_back(signal[90]);
+        v2.push_back(signal[95]);
     }
 
-    GenerateSignal(v1.size(), 273, v3);
+    GenerateSignal(30000, 1, v3);
 
     std::vector<double> distr_v1_x;
     std::vector<double> distr_v1_y;
@@ -391,10 +391,9 @@ int main()
         std::cout << "colmagorivCheck [2]: Failed" << std::endl;
 
     plt::figure(1);
-    plt::title("Процесс");
+    plt::title("Распределение");
     plt::plot(distr_v1_x, distr_v1_y);
     plt::plot(distr_v2_x, distr_v2_y);
-    //plt::plot(distr_v3_x, distr_v3_y);
     plt::grid(true);
     plt::show();
 
