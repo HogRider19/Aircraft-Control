@@ -9,7 +9,7 @@
 
 #define forI(i, c) for(size_t i = 0; i < c.size(); i++)
 
-#define D 1.0
+#define D 0.5
 #define a 2.0
 #define h 0.002
 #define n 10000.0
@@ -90,8 +90,8 @@ std::vector<double> getCore(std::vector<double> x, std::vector<double> y) {
     }
 
     
-    double d = y[0] - k[0];
-    forI(i, k) k[i] += 0.4;
+    // double d = y[0] - k[0];
+    // forI(i, k) k[i] += 0.3;
     return k;
 }
 
@@ -234,10 +234,11 @@ void getDistributionFunction(
 }
 
 
+
 int main() {
 
-    // 4
-    srand(4);
+    // 4 1
+    srand(8);
     int rndCount = 100000;
     std::vector<double> rnd(rndCount);
 
@@ -266,16 +267,13 @@ int main() {
         th_y.push_back(y);
     }
 
-    std::vector<double> core_y = getCore(Xt_x, Xt_y);    
-    std::vector<double> core_x {th_x.begin(), th_x.begin() + core_y.size()};
-
     std::vector<double> F_y = applay(Xt_y, F);
     std::vector<double> F_x {Xt_x.begin(), Xt_x.begin() + Xt_x.size()};
 
     std::cout << "Expected value before: " << getExpectedValue(F_y, 1000) << std::endl;
 
     std::vector<double> new_F_y = applay(F_y, reverse);
-    std::vector<double> new_F_x {th_x.begin(), th_x.begin() + core_y.size()};
+    std::vector<double> new_F_x {th_x.begin(), th_x.begin() + F_x.size()};
 
     std::cout << "Expected value after: " << getExpectedValue(new_F_y, 1000) << std::endl;
 
@@ -289,6 +287,9 @@ int main() {
     getTheoryDistributionFunction(realTheoryX, theoryX, theoryY);
     //
 
+    std::vector<double> core_y = getCore(new_F_x, new_F_y);    
+    std::vector<double> core_x {new_F_x.begin(), new_F_x.begin() + core_y.size()};
+
     double c = colmagorivCheck(realTheoryX, realTheoryY, theoryX, theoryY, 0);
     std::cout << "colmagorivCheck Index: " << c <<  std::endl;
 
@@ -297,7 +298,7 @@ int main() {
     else
         std::cout << "colmagorivCheck: Failed" << std::endl;
 
-    double border = 0.8;
+    double border = 0.5;
     int nn = 0;
     int borderIndex = core_x.size() - 1;
     forI(i, core_x) if (core_x[i] > border) { borderIndex = i; break; }
@@ -317,21 +318,23 @@ int main() {
     plt::plot(th_x, th_y);
     plt::plot(core_x, core_y);
     plt::grid(true);
+    plt::show();
 
     theoryX = {theoryX.begin(), theoryX.begin() + 723};
     theoryY = {theoryY.begin(), theoryY.begin() + 723};
 
-    plt::figure(2);
-    plt::title("Функция распределения");
-    plt::plot(theoryX, theoryY);
-    plt::plot(realTheoryX, realTheoryY);
-    plt::grid(true);
+    // plt::figure(2);
+    // plt::title("Функция распределения");
+    // plt::plot(theoryX, theoryY);
+    // plt::plot(realTheoryX, realTheoryY);
+    // plt::grid(true);
+    // plt::show();
 
-    plt::figure(3);
-    plt::title("Процесс");
-    plt::plot(new_F_x, new_F_y);
-    plt::grid(true);
-    plt::show();
+    // plt::figure(3);
+    // plt::title("Процесс");
+    // plt::plot(new_F_x, new_F_y);
+    // plt::grid(true);
+    // plt::show();
 
     return 0;
 }
