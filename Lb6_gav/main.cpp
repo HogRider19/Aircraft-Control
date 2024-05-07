@@ -249,7 +249,7 @@ double colmagorivCheck(std::vector<double>& dataX,
         if (c > max)
             max = c;
     }
-    return max;
+    return max * sqrt((double)dataX.size());
 }
 
 double factorial(double N) {
@@ -378,7 +378,7 @@ int main()
     double cIndex1 = colmagorivCheck(distr_v1_x, distr_v1_y, distr_v2_x, distr_v2_y);
     std::cout << "Colmagorov Index [1]: " << cIndex1 << std::endl;
 
-    if (cIndex1 < 0.162)
+    if (cIndex1 < 1.22)
         std::cout << "colmagorivCheck [1]: Passed" << std::endl;
     else
         std::cout << "colmagorivCheck [1]: Failed" << std::endl;
@@ -387,7 +387,7 @@ int main()
     double cIndex2 = colmagorivCheck(distr_v1_x, distr_v1_y, distr_v3_x, distr_v3_y);
     std::cout << "Colmagorov Index [2]: " << cIndex2 << std::endl;
 
-    if (cIndex2 < 0.162)
+    if (cIndex2 < 1.22)
         std::cout << "colmagorivCheck [2]: Passed" << std::endl;
     else
         std::cout << "colmagorivCheck [2]: Failed" << std::endl;

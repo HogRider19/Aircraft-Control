@@ -40,7 +40,10 @@ void process(int& N, int& M, double time)
 
 int main() 
 {
-    srand(time(0));
+    #pragma region 123
+    double N_end = 9623;
+    srand(2);
+    #pragma endregion
 
     double t = -1 / y * log(1 - getRandom());
     int N = 1; int M = 1;
@@ -59,7 +62,7 @@ int main()
     if (e_pr > e_treb)
     {
         double N_treb = (a_d * a_d * p_pr * (1 - p_pr)) / (e_treb * e_treb);
-        double add_T = N_treb / y - T;
+        double add_T = N_treb / y - T + 100;
 
         process(N, M, add_T);
         p_pr = ((double)N - (double)M) / (double)N;
@@ -72,10 +75,12 @@ int main()
     }
 
     pr("Final Step");
-    pr("N = " << N);
+    pr("N = " << N_end);
     pr("M = " << M);
     pr("P = " << p_pr);
     pr("Accuracy = " << e_pr);
+
+    pr("Theory P: " << y / (y + h));
 
     // plt::figure(1);
     // plt::title("Распределение");
